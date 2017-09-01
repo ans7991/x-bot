@@ -40,7 +40,8 @@ function getGoogleResponse(clips) {
       "subtitle": clip.Title,
       "formattedText": clip.Title,
       "image": {
-        "url": clip.Tcid16x9
+        "url": clip.Tcid16x9,
+        "accessibilityText": "Thumbnail image for " + clip.Title
       },
       "buttons": [
         {
@@ -65,7 +66,8 @@ function getGoogleResponse(clips) {
         "title": "Watch "+ clip.Title,
         "description": clip.description,
         "image": {
-          "url": clip.Tcid16x9
+          "url": clip.Tcid16x9,
+          "accessibilityText": "Thumbnail image for " + clip.Title
         }
       })
     });
