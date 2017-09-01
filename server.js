@@ -23,6 +23,89 @@ router.use(function (req, res, next) {
     next(); // make sure we go to the next routes and don't stop here
 });
 
+function getGoogleResponse(clips) {
+  if( clips.length == 1) {
+    var clip = clips[0];
+    var response = [{
+      "type": "simple_response",
+      "platform": "google",
+      "textToSpeech": clip.Title
+    },
+    {
+      "type": "basic_card",
+      "platform": "google",
+      "title": clip.Title,
+      "subtitle": clip.Title,
+      "formattedText": clip.Title,
+      "image": {
+        "url": clip.Tcid16x9
+      },
+      "buttons": [
+        {
+          "title": clip.Title,
+          "openUrlAction": {
+            "url": clip.videoUrl
+          }
+        }
+      ]
+    }];
+    return response;
+  } else {
+    var cards = []
+    clips.forEach(function (clip, index, arr) {
+      cards.push({
+        "optionInfo": {
+          "key": "" + index,
+          "synonyms": [
+            clip.Title
+          ]
+        },
+        "title": "Watch "+ clip.Title,
+        "description": clip.description,
+        "image": {
+          "url": clip.Tcid16x9
+        }
+      })
+    });
+
+    var response = [
+         {
+           "type": "simple_response",
+           "platform": "google",
+           "textToSpeech": "Here are the episodes for you"
+         },
+         {
+           "type": "carousel_card",
+           "platform": "google",
+           "items": cards
+         }
+       ]
+    return response;
+  }
+}
+
+router.route('/ra').post(function (req, res) {
+    console.log(req.body.result.parameters)
+    var query = {}
+    ClipRepository.find({
+        title: req.body.result.parameters.title,
+        actor: req.body.result.parameters.actor,
+        language: req.body.result.parameters.language,
+        genre: req.body.result.parameters.genre,
+        episodeNo: req.body.result.parameters.episodeNo,
+    }, function(err, clips) {
+        if (err)
+            res.send(err);
+        clips.forEach(function (clip) {
+            clip.Tcid16x9 = "https://vuclipi-a.akamaihd.net/p/tthumb280x210/v3/d-1/" + clip.Tcid16x9;
+            clip.videoUrl = "https://web.viu.com/in-hindi/en/video-hackathon-" + clip._id;
+        })
+
+        res.json({messages: getGoogleResponse(clips)});
+    });
+});
+
+
 router.post('/', function (req, res) {
     console.log(req.body.result.parameters);
     var response = 'hello world';
@@ -116,6 +199,12 @@ router.route('/query').get(function (req, res) {
     }, function (err, clips) {
         if (err)
             res.send(err);
+        clips = clips ? clips : [];
+        clips.forEach(function (clip) {
+            clip.Tcid16x9 = "https://vuclipi-a.akamaihd.net/p/tthumb280x210/v3/d-1/" + clip.Tcid16x9 + ".jpg";
+            clip.videoUrl = "https://web.viu.com/in-hindi/en/video-hackathon-" + clip._id;
+        })
+
         res.json(clips);
     });
 });
