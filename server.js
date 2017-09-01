@@ -3,6 +3,7 @@ var express = require('express'); // call express
 var app = express(); // define our app using express
 var bodyParser = require('body-parser');
 var Clip = require('./app/models/clip');
+var ClipRepository = require('./app/repositories/clipRepository')
 //var mongoose = require('mongoose');
 //
 //mongoose.connect('mongodb://artist:artist@ds127260.mlab.com:27260/content');
@@ -116,93 +117,22 @@ conn.once('open', function () {
 
 //---------------------------------------------------------------------------------------------------------------------------------------------------------
 
-var genres = {
-    "comedy": [192, 41],
-    "sports": [105, 145, 12],
-    "science": [202, 146],
-    "movie": [9, 19],
-    "crime": [104, 47],
-    "thrillers": [156, 46],
-    "action": [147],
-    "horror": [40],
-    "trailer": [226]
-}
-
-
 router.route('/query').get(function (req, res) {
     var query = {}
-    
-    if (req.query.title) {
-        query = {
-            $text: {
-                $search: '\"' + req.query.title + '\"'
-            }
-        }
-    }
-
-    if (req.query.actor) {
-        query.$or = [{
-                Actors: {
-                    $regex: ".*" + req.query.actor + ".*"
-                }
-            },
-            {
-                Actresses: {
-                    $regex: ".*" + req.query.actor + ".*"
-                }
-            }]
-    }
-
-    if (req.query.language) {
-        query.Language = {
-            $eq: req.query.language.charAt(0).toUpperCase() + req.query.language.slice(1)
-        }
-    }
-
-    if (req.query.genre) {
-        var genre = genres[req.query.genre];
-        query.$or.concat([{
-                Genre: {
-                    $in: genre
-                }
-            },
-            {
-                SubGenre: {
-                    $in: genre
-                }
-            }])
-    }
-
-    if (req.query.episodeNo) {
-        query.EpisodeNo = {
-            $eq: parseInt(req.query.episodeNo, 10)
-        }
-
-    }
-
-    Clip.find(query, {
-            score: {
-                $meta: "textScore"
-            }
+    ClipRepository.find({
+        title: req.query.title,
+        actor: req.query.actor,
+        language: req.query.language,
+        genre: req.query.genre,
+        episodeNo: req.query.episodeNo,
+    }, function(err, clips) {
+        if (err)
+            res.send(err);
+        clips.forEach(function (clip) {
+            clip.Tcid16x9 = "https://vuclipi-a.akamaihd.net/p/tthumb280x210/v3/d-1/" + clip.Tcid16x9 + ".jpg";
+            clip.videoUrl = "https://web.viu.com/in-hindi/en/video-hackathon-" + clip._id;
         })
-        .sort({
-            score: {
-                $meta: "textScore"
-            }
-        })
-        .select('Title _id Actors Actresses Tcid16x9 Language EpisodeNo')
-        .lean()
-        .limit(10)
-        .exec(
-            function (err, clips) {
-                if (err)
-                    res.send(err);
-                clips.forEach(function (clip) {
-                    clip.Tcid16x9 = "https://vuclipi-a.akamaihd.net/p/tthumb280x210/v3/d-1/" + clip.Tcid16x9 + ".jpg";
-                    clip.videoUrl = "https://web.viu.com/in-hindi/en/video-hackathon-" + clip._id;
-                })
 
-                res.json(clips);
-            });
-
+        res.json(clips);
+    });
 });
