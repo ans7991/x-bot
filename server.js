@@ -31,21 +31,19 @@ function getGoogleResponse(clips) {
     var response = [{
       "type": "simple_response",
       "platform": "google",
-      "textToSpeech": clip.Title
+      "textToSpeech": "Here is the episode for you"
     },
     {
       "type": "basic_card",
       "platform": "google",
       "title": clip.Title,
-      "subtitle": clip.Title,
-      "formattedText": clip.Title,
       "image": {
         "url": clip.Tcid16x9,
         "accessibilityText": "Thumbnail image for " + clip.Title
       },
       "buttons": [
         {
-          "title": clip.Title,
+          "title": "Watch the episode",
           "openUrlAction": {
             "url": clip.videoUrl
           }
@@ -100,6 +98,7 @@ router.route('/ra').post(function (req, res) {
     }, function(err, clips) {
         if (err)
             res.send(err);
+        clips = clips ? clips : [];
         clips.forEach(function (clip) {
             clip.Tcid16x9 = "https://vuclipi-a.akamaihd.net/p/tthumb280x210/v3/d-1/" + clip.Tcid16x9;
             clip.videoUrl = "https://web.viu.com/in-hindi/en/video-hackathon-" + clip._id;
