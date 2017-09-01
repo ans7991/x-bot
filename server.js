@@ -76,9 +76,14 @@ router.route('/query').get(function (req, res) {
             $regex: ".*" + req.query.actor + ".*"
         }
     }
+    if (req.query.language) {
+        query.Language = {
+            $eq: req.query.language.charAt(0).toUpperCase() + req.query.language.slice(1)
+        }
+    }
 
     console.log(query);
-    Clip.find(query).select('Title _id Actors Actresses Tcid16x9').lean().exec(
+    Clip.find(query).select('Title _id Actors Actresses Tcid16x9 Language').lean().limit(100).exec(
         function (err, clips) {
             if (err)
                 res.send(err);
