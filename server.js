@@ -1,30 +1,93 @@
-// modules =================================================
-var express        = require('express');
-var app            = express();
-var mongoose       = require('mongoose');
-var bodyParser     = require('body-parser');
-var methodOverride = require('method-override');
+// call the packages we need
+var express = require('express'); // call express
+var app = express(); // define our app using express
+var bodyParser = require('body-parser');
+var Clip = require('./app/models/clip');
+//var mongoose = require('mongoose');
+//
+//mongoose.connect('mongodb://artist:artist@ds127260.mlab.com:27260/content');
 
-// configuration ===========================================
-	
-// config files
-var db = require('./config/db');
+app.use(bodyParser.urlencoded({
+    extended: true
+}));
 
-var port = process.env.PORT || 8080; // set our port
-// mongoose.connect(db.url); // connect to our mongoDB database (commented out after you enter in your own credentials)
+app.use(bodyParser.json());
 
-// get all data/stuff of the body (POST) parameters
-app.use(bodyParser.json()); // parse application/json 
-app.use(bodyParser.json({ type: 'application/vnd.api+json' })); // parse application/vnd.api+json as json
-app.use(bodyParser.urlencoded({ extended: true })); // parse application/x-www-form-urlencoded
+var port = process.env.PORT || 5050; // set our port
 
-app.use(methodOverride('X-HTTP-Method-Override')); // override with the X-HTTP-Method-Override header in the request. simulate DELETE/PUT
-app.use(express.static(__dirname + '/public')); // set the static files location /public/img will be /img for users
+var router = express.Router(); // get an instance of the express Router
 
-// routes ==================================================
-require('./app/routes')(app); // pass our application into our routes
+router.use(function (req, res, next) {
+    console.log('Something is happening.');
+    next(); // make sure we go to the next routes and don't stop here
+});
 
-// start app ===============================================
-app.listen(port);	
-console.log('Magic happens on port ' + port); 			// shoutout to the user
-exports = module.exports = app; 						// expose app
+router.get('/', function (req, res) {
+    res.json({
+        message: 'hooray! welcome to our api!'
+    });
+});
+
+app.use('/api', router);
+
+var mongoose = require('mongoose');
+
+var options = {
+    server: {
+        socketOptions: {
+            keepAlive: 300000,
+            connectTimeoutMS: 30000
+        }
+    },
+    replset: {
+        socketOptions: {
+            keepAlive: 300000,
+            connectTimeoutMS: 30000
+        }
+    }
+};
+
+var mongodbUri = 'mongodb://artist:artist@ds127260.mlab.com:27260/content';
+
+mongoose.connect(mongodbUri, options);
+var conn = mongoose.connection;
+
+conn.on('error', console.error.bind(console, 'connection error:'));
+
+conn.once('open', function () {
+    app.listen(port);
+    console.log('Magic happens on port ' + port);
+});
+
+//---------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+router.route('/query').get(function (req, res) {
+    var query = {}
+    if (req.query.title) {
+        query = {
+            $text: {
+                $search: req.query.title
+            }
+        }
+    }
+    if (req.query.actor) {
+        query.Actors = {
+            $regex: ".*" + req.query.actor + ".*"
+        }
+    }
+
+    console.log(query);
+    Clip.find(query).select('Title _id Actors Actresses Tcid16x9').lean().exec(
+        function (err, clips) {
+            if (err)
+                res.send(err);
+            clips.forEach(function (clip) {
+                clip.Tcid16x9 = "https://vuclipi-a.akamaihd.net/p/tthumb280x210/v3/d-1/" + clip.Tcid16x9 + ".jpg";
+                clip.videoUrl = "https://web.viu.com/in-hindi/en/video-hackathon-" + clip._id;
+            })
+
+            res.json(clips);
+        });
+
+});
