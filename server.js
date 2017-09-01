@@ -112,6 +112,18 @@ conn.once('open', function () {
 
 //---------------------------------------------------------------------------------------------------------------------------------------------------------
 
+var genres = {
+    "comedy": [192, 41],
+    "sports": [105, 145, 12],
+    "science": [202, 146],
+    "movie": [9, 19],
+    "crime": [104, 47],
+    "thrillers": [156, 46],
+    "action": [147],
+    "horror": [40],
+    "trailer": [226]
+}
+
 
 router.route('/query').get(function (req, res) {
     var query = {}
@@ -122,19 +134,49 @@ router.route('/query').get(function (req, res) {
             }
         }
     }
+
     if (req.query.actor) {
-        query.Actors = {
-            $regex: ".*" + req.query.actor + ".*"
-        }
+        query.$or = [{
+                Actors: {
+                    $regex: ".*" + req.query.actor + ".*"
+                }
+            },
+            {
+                Actresses: {
+                    $regex: ".*" + req.query.actor + ".*"
+                }
+            }]
     }
+
     if (req.query.language) {
         query.Language = {
             $eq: req.query.language.charAt(0).toUpperCase() + req.query.language.slice(1)
         }
     }
 
+    if (req.query.genre) {
+        var genre = genres[req.query.genre];
+        query.$or.concat([{
+                Genre: {
+                    $in: genre
+                }
+            },
+            {
+                SubGenre: {
+                    $in: genre
+                }
+            }])
+    }
+
+    if (req.query.episodeNo) {
+        query.EpisodeNo = {
+            $eq: parseInt(req.query.episodeNo, 10)
+        }
+        
+    }
+
     console.log(query);
-    Clip.find(query).select('Title _id Actors Actresses Tcid16x9 Language').lean().limit(100).exec(
+    Clip.find(query).select('Title _id Actors Actresses Tcid16x9 Language EpisodeNo').lean().limit(100).exec(
         function (err, clips) {
             if (err)
                 res.send(err);
