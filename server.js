@@ -13,10 +13,6 @@ app.use(bodyParser.urlencoded({
 }));
 
 app.use(bodyParser.json());
-app.use(express.static(__dirname + '/public')); // set the static files location /public/img will be /img for users
-
-// routes ==================================================
-require('./app/routes')(app);
 
 var port = process.env.PORT || 5050; // set our port
 
@@ -194,7 +190,6 @@ conn.once('open', function () {
 //---------------------------------------------------------------------------------------------------------------------------------------------------------
 
 router.route('/query').get(function (req, res) {
-
     ClipRepository.find({
         title: req.query.title,
         actor: req.query.actor,

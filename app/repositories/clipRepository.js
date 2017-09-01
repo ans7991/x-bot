@@ -16,7 +16,6 @@ class ClipRepository {
         }
 
         console.log(criteria);
-        
         var query = { }
         if (criteria.title) {
             query.$text = {
@@ -40,7 +39,7 @@ class ClipRepository {
 
         if (criteria.language) {
             query.Language = {
-                $eq: criteria.language.charAt(0).toUpperCase() + criteria.language.toLowerCase.slice(1)
+                $eq: criteria.language.charAt(0).toUpperCase() + criteria.language.slice(1)
             }
         }
 
@@ -78,7 +77,7 @@ class ClipRepository {
             })
             .select('Title _id Actors Actresses Tcid16x9 Language EpisodeNo')
             .lean()
-            .limit(criteria.limit || 12)
+            .limit(criteria.limit || 10)
             .exec((err, clips) => {
                 if (!err) {
                     clips.forEach(function (clip) {
