@@ -13,6 +13,8 @@ app.use(bodyParser.urlencoded({
 }));
 
 app.use(bodyParser.json());
+app.use(express.static(__dirname + '/public'));
+require('./app/routes')(app);
 
 var port = process.env.PORT || 5050; // set our port
 

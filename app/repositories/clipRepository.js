@@ -16,7 +16,8 @@ class ClipRepository {
         }
 
         console.log(criteria);
-        var query = { }
+
+        var query = {}
         if (criteria.title) {
             query.$text = {
                 $search: '\"' + criteria.title + '\"'
@@ -26,36 +27,48 @@ class ClipRepository {
         if (criteria.actor) {
             query.$or = query.$or || []
             query.$or = [{
-                Actors: {
-                    $regex: ".*" + criteria.actor + ".*"
-                }
+                    Actors: {
+                        $regex: ".*" + criteria.actor + ".*"
+                    }
             },
-            {
-                Actresses: {
-                    $regex: ".*" + criteria.actor + ".*"
-                }
+                {
+                    Actresses: {
+                        $regex: ".*" + criteria.actor + ".*"
+                    }
             }]
         }
 
         if (criteria.language) {
             query.Language = {
-                $eq: criteria.language.charAt(0).toUpperCase() + criteria.language.slice(1)
+                $eq: criteria.language.charAt(0).toUpperCase() + criteria.language.toLowerCase().slice(1)
             }
         }
 
         if (criteria.genre) {
             var genre = genres[criteria.genre];
-            query.$or = query.$or || []
-            query.$or.concat([{
-                Genre: {
-                    $in: genre
-                }
+            if (query.$or) {
+                query.$or.concat([{
+                        Genre: {
+                            $in: genre
+                        }
             },
-            {
-                SubGenre: {
-                    $in: genre
-                }
+                    {
+                        SubGenre: {
+                            $in: genre
+                        }
             }])
+            } else {
+                query.$or = [{
+                        Genre: {
+                            $in: genre
+                        }
+            },
+                    {
+                        SubGenre: {
+                            $in: genre
+                        }
+            }]
+            }
         }
 
         if (criteria.episodeNo) {
@@ -65,11 +78,12 @@ class ClipRepository {
 
         }
 
+        console.log(query);
         Clip.find(query, {
-            score: {
-                $meta: "textScore"
-            }
-        })
+                score: {
+                    $meta: "textScore"
+                }
+            })
             .sort({
                 score: {
                     $meta: "textScore"
@@ -77,7 +91,7 @@ class ClipRepository {
             })
             .select('Title _id Actors Actresses Tcid16x9 Language EpisodeNo')
             .lean()
-            .limit(criteria.limit || 10)
+            .limit(criteria.limit || 12)
             .exec((err, clips) => {
                 if (!err) {
                     clips.forEach(function (clip) {
@@ -87,7 +101,6 @@ class ClipRepository {
                 }
                 handler(err, clips)
             });
-
     }
 }
 
