@@ -200,11 +200,6 @@ router.route('/query').get(function (req, res) {
         if (err)
             res.send(err);
         clips = clips ? clips : [];
-        clips.forEach(function (clip) {
-            clip.Tcid16x9 = "https://vuclipi-a.akamaihd.net/p/tthumb280x210/v3/d-1/" + clip.Tcid16x9 + ".jpg";
-            clip.videoUrl = "https://web.viu.com/in-hindi/en/video-hackathon-" + clip._id;
-        })
-
         res.json(clips);
     });
 });
