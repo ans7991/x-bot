@@ -24,57 +24,46 @@ router.use(function (req, res, next) {
 });
 
 router.post('/', function (req, res) {
-    console.log(req);
+    console.log(req.body.result.parameters);
     var response = 'hello world';
-    var x = {
-        "facebook": {
-            "attachment": {
-                "type": "template",
-                "payload": {
-                    "template_type": "list",
-                    "elements": [
-                        {
-                            "title": "Gehraiyaan Uncut Ep-1",
-                            "image_url": "https://vuclipi-a.akamaihd.net/p/tthumb280x210/v2/d-1/1151929856.jpg",
-                            "default_action": {
-                                "type": "web_url",
-                                "url": "https://web.viu.com/in-hindi/en/video-gehraiyaan_uncut_ep_1-1151929856"
-                            }
-                        },
-                        {
-                            "title": "Gehraiyaan Uncut Ep-2",
-                            "image_url": "https://vuclipi-a.akamaihd.net/p/tthumb280x210/v2/d-1/1152042075.jpg",
-                            "default_action": {
-                                "type": "web_url",
-                                "url": "https://web.viu.com/in-hindi/en/video-gehraiyaan_uncut_ep_2-1152042075"
-                            }
-                        },
-                        {
-                            "title": "Gehraiyaan Uncut Ep-3",
-                            "image_url": "https://vuclipi-a.akamaihd.net/p/tthumb280x210/v3/d-1/1152206104.jpg",
-                            "default_action": {
-                                "type": "web_url",
-                                "url": "https://web.viu.com/in-hindi/en/video-gehraiyaan_uncut_ep_2-1152042075"
-                            }
-                        },
-                        {
-                            "title": "Gehraiyaan Uncut Ep-4",
-                            "image_url": "https://vuclipi-a.akamaihd.net/p/tthumb280x210/v5/d-1/1154884372.jpg",
-                            "default_action": {
-                                "type": "web_url",
-                                "url": "https://web.viu.com/in-hindi/en/video-gehraiyaan_uncut_ep_3-1152206104"
-                            }
+    ClipRepository.find({
+        title: req.body.result.parameters.title,
+        actor: req.body.result.parameters.actor,
+        language: req.body.result.parameters.language,
+        genre: req.body.result.parameters.movieGenre,
+        episodeNo: req.body.result.parameters.episodeNo,
+        limit: 4
+    }, (err, clips) => {
+        if (err)
+            res.send(err);
+        var elements = clips.map((clip) => {
+            return {
+                "title": clip.Title,
+                "image_url": clip.Tcid16x9,
+                "default_action": {
+                    "type": "web_url",
+                    "url": clip.videoUrl
+                }
+            }
+        });
+
+        var resp = {
+            "speech": response,
+            "displayText": response,
+            data: {
+                "facebook": {
+                    "attachment": {
+                        "type": "template",
+                        "payload": {
+                            "template_type": "list",
+                            "elements": elements
                         }
-                    ]
+                    }
                 }
             }
         }
-    };
-    //res.json(x);
-    res.json({
-        "speech": response,
-        "displayText": response,
-        data: x
+        console.log(JSON.stringify(resp))
+        res.json(resp);
     });
 });
 
@@ -118,21 +107,15 @@ conn.once('open', function () {
 //---------------------------------------------------------------------------------------------------------------------------------------------------------
 
 router.route('/query').get(function (req, res) {
-    var query = {}
     ClipRepository.find({
         title: req.query.title,
         actor: req.query.actor,
         language: req.query.language,
         genre: req.query.genre,
         episodeNo: req.query.episodeNo,
-    }, function(err, clips) {
+    }, function (err, clips) {
         if (err)
             res.send(err);
-        clips.forEach(function (clip) {
-            clip.Tcid16x9 = "https://vuclipi-a.akamaihd.net/p/tthumb280x210/v3/d-1/" + clip.Tcid16x9 + ".jpg";
-            clip.videoUrl = "https://web.viu.com/in-hindi/en/video-hackathon-" + clip._id;
-        })
-
         res.json(clips);
     });
 });
