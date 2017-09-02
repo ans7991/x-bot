@@ -86,32 +86,8 @@ function getGoogleResponse(clips) {
   }
 }
 
-router.route('/ra').post(function (req, res) {
-    console.log(req.body.result.parameters)
-    var query = {}
-    ClipRepository.find({
-        title: req.body.result.parameters.title,
-        actor: req.body.result.parameters.actor,
-        language: req.body.result.parameters.language,
-        genre: req.body.result.parameters.genre,
-        episodeNo: req.body.result.parameters.episodeNo,
-    }, function(err, clips) {
-        if (err)
-            res.send(err);
-        clips = clips ? clips : [];
-        clips.forEach(function (clip) {
-            clip.Tcid16x9 = "https://vuclipi-a.akamaihd.net/p/tthumb280x210/v3/d-1/" + clip.Tcid16x9;
-            clip.videoUrl = "https://web.viu.com/in-hindi/en/video-hackathon-" + clip._id;
-        })
-
-        res.json({messages: getGoogleResponse(clips)});
-    });
-});
-
-
 router.post('/', function (req, res) {
     console.log(req.body.result.parameters);
-    var response = 'hello world';
     ClipRepository.find({
         title: req.body.result.parameters.title,
         actor: req.body.result.parameters.actor,
@@ -134,8 +110,7 @@ router.post('/', function (req, res) {
         });
 
         var resp = {
-            "speech": response,
-            "displayText": response,
+            "messages": getGoogleResponse(clips),
             data: {
                 "facebook": {
                     "attachment": {
