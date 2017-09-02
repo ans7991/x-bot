@@ -77,10 +77,9 @@ class ClipRepository {
             }
 
         }
-        
-        query.Paid = 1;
 
         console.log(query);
+
         Clip.find(query, {
                 score: {
                     $meta: "textScore"
@@ -100,6 +99,9 @@ class ClipRepository {
                         clip.Tcid16x9 = "https://vuclipi-a.akamaihd.net/p/tthumb280x210/v3/d-1/" + clip.Tcid16x9 + ".jpg";
                         clip.videoUrl = "https://web.viu.com/in-hindi/en/video-hackathon-" + clip._id;
                     })
+                }
+                if (!criteria.actor && !criteria.episodeNo && !criteria.genre && !criteria.title && !criteria.language) {
+                    clips.length = 0;
                 }
                 handler(err, clips)
             });
