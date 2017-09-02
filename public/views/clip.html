@@ -27,6 +27,9 @@
 -->
 
 <style>
+    .clipcontainer {
+        margin-bottom: 5px;
+    }
     .clip {
         position: relative;
         width: 100%;
@@ -58,7 +61,7 @@
     
 </style>
 <div masonry preserve-order column-width="142">
-    <div class="masonry-brick" ng-repeat="clip in clips">
+    <div class="clipcontainer masonry-brick" ng-repeat="clip in clips">
         <a class="clip" href="{{clip.videoUrl}}">
             <div class="title">{{clip.Title}}</div>
             <div class="image"><img ng-src="{{ clip.Tcid16x9 }}"></div>

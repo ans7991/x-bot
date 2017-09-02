@@ -38,19 +38,40 @@
 </head>
 
 <body ng-app="viuBot" ng-controller="ClipController">
+    <nav class="navbar navbar-inverse navbar-static-top">
+        <ul class="nav navbar-nav">
+            <li class="navbar-brand"><i class="glyphicon glyphicon-expand"></i> Viu-bot</li>
+            <li class="navbar-text">
+                    <div class="fb-messengermessageus" messenger_app_id="116272162346365" page_id="141536439779487" color="white"
+                        size="standard">
+                    </div>
+                </li>
+        </ul>
+    </nav>
+
     <div class="container">
-
-        <!-- HEADER -->
-        <nav class="">
-            <ul class="">
-<!--                <li><a href="/clips">Clips</a></li>-->
-            </ul>
-        </nav>
-
         <!-- ANGULAR DYNAMIC CONTENT -->
         <div ng-view></div>
 
     </div>
 </body>
+<script>
+    window.fbAsyncInit = function () {
+        FB.init({
+            appId: "APP_ID",
+            xfbml: true,
+            version: "v2.6"
+        });
+
+    };
+
+    (function (d, s, id) {
+        var js, fjs = d.getElementsByTagName(s)[0];
+        if (d.getElementById(id)) { return; }
+        js = d.createElement(s); js.id = id;
+        js.src = "//connect.facebook.net/en_US/sdk.js";
+        fjs.parentNode.insertBefore(js, fjs);
+    }(document, 'script', 'facebook-jssdk'));
+</script>
 
 </html>
