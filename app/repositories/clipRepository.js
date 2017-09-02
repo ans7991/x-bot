@@ -93,7 +93,7 @@ class ClipRepository {
             })
             .select('Title _id Actors Actresses Tcid16x9 Language EpisodeNo Paid')
             .lean()
-            .limit(criteria.limit || 120)
+            .limit(criteria.limit || 12)
             .exec((err, clips) => {
                 if (!err) {
                     clips.forEach(function (clip) {
