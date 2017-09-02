@@ -102,17 +102,44 @@ function getGoogleResponse(clips) {
 }
 
 router.post('/', function (req, res) {
-    console.log(req.body.result.parameters);
+    var title;
+    var actor;
+    var language;
+    var genre;
+    var episodeNo;
+    if (req.body.result.action == "show") {
+      title=req.body.result.parameters.title;
+      actor=req.body.result.parameters.actor;
+      language=req.body.result.parameters.language;
+      genre=req.body.result.parameters.movieGenre;
+      episodeNo=req.body.result.parameters.episodeNo;
+    } else if (req.body.result.action == "play") {
+      var context = req.body.result.contexts.find(c => c.name == 'content-shown');
+      title=context.parameters['title.original'];
+      actor=context.parameters['actor.original'];
+      language=context.parameters['language.original'];
+      genre=context.parameters['movieGenre.original'];
+      episodeNo=context.parameters['episodeNo.original'];
+    }
+
     ClipRepository.find({
-        title: req.body.result.parameters.title,
-        actor: req.body.result.parameters.actor,
-        language: req.body.result.parameters.language,
-        genre: req.body.result.parameters.movieGenre,
-        episodeNo: req.body.result.parameters.episodeNo,
+        title: title,
+        actor: actor,
+        language: language,
+        genre: genre,
+        episodeNo: episodeNo,
         limit: 4
-    }, (err, clips) => {
+    }, (err, resultClips) => {
         if (err)
             res.send(err);
+        var clips;
+        if (req.body.result.action == "play") {
+          var clipToPlay = resultClips[req.body.result.parameters.ordinal];
+          clips = clipToPlay ? [clipToPlay] : []
+        } else {
+          clips = resultClips ? resultClips : []
+        }
+
         var elements = clips.map((clip) => {
             return {
                 "title": clip.Title,
