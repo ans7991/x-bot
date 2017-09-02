@@ -4,10 +4,11 @@ class ClipRepository {
 
     static find(criteria, handler) {
         var genres = {
+            "bollywood": [333],
             "comedy": [192, 41],
             "sports": [105, 145, 12],
             "science": [202, 146],
-            "movie": [9, 19],
+            "movie": [19],
             "crime": [104, 47],
             "thriller": [156, 46],
             "action": [147],
@@ -46,7 +47,7 @@ class ClipRepository {
 
         if (criteria.genre) {
             var genre = genres[criteria.genre];
-            if (query.$or) {
+            if (genre && query.$or) {
                 query.$or.concat([{
                         Genre: {
                             $in: genre
@@ -57,7 +58,7 @@ class ClipRepository {
                             $in: genre
                         }
             }])
-            } else {
+            } else if (genre) {
                 query.$or = [{
                         Genre: {
                             $in: genre
@@ -92,7 +93,7 @@ class ClipRepository {
             })
             .select('Title _id Actors Actresses Tcid16x9 Language EpisodeNo Paid')
             .lean()
-            .limit(criteria.limit || 12)
+            .limit(criteria.limit || 120)
             .exec((err, clips) => {
                 if (!err) {
                     clips.forEach(function (clip) {
