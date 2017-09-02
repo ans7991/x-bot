@@ -26,22 +26,6 @@
 </div>
 -->
 
-<script>
-    if (annyang) {
-
-        annyang.addCallback('result', function(phrases) {
-            console.log("you said ", phrases[0]);
-        });
-
-        SpeechKITT.annyang();
-
-        SpeechKITT.setStylesheet('//cdnjs.cloudflare.com/ajax/libs/SpeechKITT/0.3.0/themes/flat.css');
-
-        SpeechKITT.vroom();
-    }
-
-</script>
-
 <div masonry column-width="142">
     <div class="masonry-brick" ng-repeat="clip in clips">
         <p><img ng-src="{{ clip.Tcid16x9 }}"></p>

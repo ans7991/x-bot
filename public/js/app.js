@@ -1,1 +1,1 @@
-angular.module('viuBot', ['ngRoute', 'appRoutes', 'ClipService', 'ClipCtrl', 'wu.masonry']);
+angular.module('viuBot', ['ngRoute', 'appRoutes', 'ClipService', 'VoiceService', 'ClipCtrl', 'wu.masonry']);
