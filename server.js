@@ -58,7 +58,14 @@ function getGoogleResponse(clips) {
           }
         }
       ]
+    },
+    {
+      "type": "link_out_chip",
+      "platform": "google",
+      "destinationName": "to tell friends",
+      "url": "https://www.facebook.com/sharer/sharer.php?u="+clip.videoUrl
     }];
+
     return response;
   } else {
     var cards = []
