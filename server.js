@@ -31,7 +31,7 @@ function getGoogleResponse(clips) {
             {
                 "type": "simple_response",
                 "platform": "google",
-                "textToSpeech": "I couldn't find something, Can you show you any thing else? What do you want to see?"
+                "textToSpeech": "I couldn't find it, Can I show you any thing else? What do you want to see?"
        }
      ]
         return response;
@@ -90,7 +90,19 @@ function getGoogleResponse(clips) {
                 "type": "simple_response",
                 "platform": "google",
                 "textToSpeech": "Here are the episodes for you"
-         },
+             },
+             {
+               "type": "suggestion_chips",
+               "platform": "google",
+               "suggestions": [
+                 {
+                   "title": "open first result"
+                 },
+                 {
+                   "title": "open 1rd video"
+                 }
+               ]
+             },
             {
                 "type": "carousel_card",
                 "platform": "google",
