@@ -26,7 +26,16 @@ router.use(function (req, res, next) {
 });
 
 function getGoogleResponse(clips) {
-  if( clips.length == 1) {
+  if( clips.length == 0) {
+    var response = [
+       {
+         "type": "simple_response",
+         "platform": "google",
+         "textToSpeech": "I couldn't find something, Can you show you any thing else? What do you want to see?"
+       }
+     ]
+        return response;
+  } else if( clips.length == 1) {
     var clip = clips[0];
     var response = [{
       "type": "simple_response",
