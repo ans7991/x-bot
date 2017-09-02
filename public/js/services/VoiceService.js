@@ -12,6 +12,7 @@ angular.module('VoiceService', []).factory('Voice', ['$http', '$rootScope', func
 
                 SpeechKITT.setStylesheet('//cdnjs.cloudflare.com/ajax/libs/SpeechKITT/0.3.0/themes/flat.css');
 
+                SpeechKITT.displayRecognizedSentence(true);
                 SpeechKITT.vroom();
             }
         }

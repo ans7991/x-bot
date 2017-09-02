@@ -4,7 +4,12 @@ angular.module('appRoutes', []).config(['$routeProvider', '$locationProvider', f
         .when('/clips', {
             templateUrl: 'views/clip.html',
             controller: 'ClipController'
+        })
+        .when('/', {
+            templateUrl: 'views/clip.html',
+            controller: 'ClipController'
         });
+;
 
     $locationProvider.html5Mode(true);
 

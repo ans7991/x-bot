@@ -25,9 +25,40 @@
     </form>
 </div>
 -->
+<style>
+    .clip {
+        position: relative;
+        width: 100%;
+        display: block;
+    }
 
+    .clip .title {
+        background-color: #ffc63f;
+        font-size: 12px;
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+        height: 20px;
+        overflow: hidden;
+        display: block;
+        z-index: 2;
+        padding: 5px 2px 3px;
+        text-align: center;
+    }
+    .clip .image {
+        width: 280px;
+        height: 210px;
+    }
+    #skitt-listening-text__recognized-sentence {
+        font-style: italic;
+        font-size: 0.7em;
+    }
+</style>
 <div masonry column-width="142">
     <div class="masonry-brick" ng-repeat="clip in clips">
-        <p><img ng-src="{{ clip.Tcid16x9 }}"></p>
+        <a class="clip" href="{{clip.videoUrl}}">
+            <div class="title">{{clip.Title}}</div>
+            <div class="image"><img ng-src="{{ clip.Tcid16x9 }}"></div>
+        </a>
     </div>
 </div>
