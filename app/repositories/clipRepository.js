@@ -9,7 +9,7 @@ class ClipRepository {
             "science": [202, 146],
             "movie": [9, 19],
             "crime": [104, 47],
-            "thrillers": [156, 46],
+            "thriller": [156, 46],
             "action": [147],
             "horror": [40],
             "trailer": [226]
@@ -28,12 +28,12 @@ class ClipRepository {
             query.$or = query.$or || []
             query.$or = [{
                     Actors: {
-                        $regex: ".*" + criteria.actor + ".*"
+                        $regex: ".*" + criteria.actor.charAt(0).toUpperCase() + criteria.actor.toLowerCase().slice(1) + ".*"
                     }
             },
                 {
                     Actresses: {
-                        $regex: ".*" + criteria.actor + ".*"
+                        $regex: ".*" + criteria.actor.charAt(0).toUpperCase() + criteria.actor.toLowerCase().slice(1) + ".*"
                     }
             }]
         }

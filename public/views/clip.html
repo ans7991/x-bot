@@ -1,3 +1,4 @@
+<!--
 <div>
     <form class="form-inline">
         <div class="form-group">
@@ -13,19 +14,36 @@
             <input type="text" class="form-control" ng-model="query.genre">
         </div>
         <div class="form-group">
-            <label for="exampleInputEmail2">Language</label>
+            <label for="exampleInputEmail2">Lang</label>
             <input type="text" class="form-control" ng-model="query.language">
         </div>
         <div class="form-group">
-            <label for="exampleInputEmail2">Episode No</label>
+            <label for="exampleInputEmail2">Episode</label>
             <input type="text" class="form-control" ng-model="query.episodeNo">
         </div>
-        <input type="button" class="btn btn-default" ng-click="fetch()" value="Find!">
+        <input type="button" class="btn btn-default" ng-click="fetch()" value="Go!">
     </form>
 </div>
+-->
+
+<script>
+    if (annyang) {
+
+        annyang.addCallback('result', function(phrases) {
+            console.log("you said ", phrases[0]);
+        });
+
+        SpeechKITT.annyang();
+
+        SpeechKITT.setStylesheet('//cdnjs.cloudflare.com/ajax/libs/SpeechKITT/0.3.0/themes/flat.css');
+
+        SpeechKITT.vroom();
+    }
+
+</script>
 
 <div masonry column-width="142">
     <div class="masonry-brick" ng-repeat="clip in clips">
-        <p><img ng-src="{{ clip.Tcid16x9 }}" alt="clips"></p>
+        <p><img ng-src="{{ clip.Tcid16x9 }}"></p>
     </div>
 </div>
