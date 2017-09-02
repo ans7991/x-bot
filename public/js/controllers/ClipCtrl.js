@@ -3,7 +3,7 @@ angular.module('ClipCtrl', []).controller('ClipController', function ($scope, $r
     $scope.tagline = 'Nothing beats a pocket protector!';
 
     $scope.query = {
-        actor: "salman"
+        title: "spotlight"
     }
 
     Clip.get($scope.query)
