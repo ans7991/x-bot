@@ -12,6 +12,8 @@ angular.module('ClipCtrl', []).controller('ClipController', function ($scope, $r
         });
 
     Voice.init();
+    const client = new ApiAi.ApiAiClient({ accessToken: '6998dfed53b9433c835277251d09e223' });
+    
     $scope.fetch = fetch;
 
     function fetch() {
@@ -26,7 +28,6 @@ angular.module('ClipCtrl', []).controller('ClipController', function ($scope, $r
     $rootScope.$on('VOICE_TEXT', fetchByApiAi);
 
     function fetchByApiAi(event, phrases) {
-        const client = new ApiAi.ApiAiClient({ accessToken: '6998dfed53b9433c835277251d09e223' });
         const promise = client.textRequest(phrases[0]);
 
         promise
@@ -35,14 +36,19 @@ angular.module('ClipCtrl', []).controller('ClipController', function ($scope, $r
 
         function handleResponse(serverResponse) {
             console.log(serverResponse);
-            $scope.query = {
-                actor: serverResponse.result.parameters.actor,
-                episodeNo: serverResponse.result.parameters.episodeNo,
-                genre: serverResponse.result.parameters.genre,
-                language: serverResponse.result.parameters.language,
-                title: serverResponse.result.parameters.title
-            };
-            fetch()
+            if (serverResponse.result.action === "show") {
+                $scope.query = {
+                    actor: serverResponse.result.parameters.actor,
+                    episodeNo: serverResponse.result.parameters.episodeNo,
+                    genre: serverResponse.result.parameters.genre,
+                    language: serverResponse.result.parameters.language,
+                    title: serverResponse.result.parameters.title
+                };
+                fetch()
+            } else if (serverResponse.result.action === "play") {
+                window.location = $scope.clips[serverResponse.result.parameters.ordinal - 1].videoUrl;
+            }
+
         }
         function handleError(serverError) {
             console.log(serverError);
