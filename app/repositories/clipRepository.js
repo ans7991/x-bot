@@ -77,6 +77,8 @@ class ClipRepository {
             }
 
         }
+        
+        query.Paid = 1;
 
         console.log(query);
         Clip.find(query, {
@@ -89,7 +91,7 @@ class ClipRepository {
                     $meta: "textScore"
                 }
             })
-            .select('Title _id Actors Actresses Tcid16x9 Language EpisodeNo')
+            .select('Title _id Actors Actresses Tcid16x9 Language EpisodeNo Paid')
             .lean()
             .limit(criteria.limit || 12)
             .exec((err, clips) => {

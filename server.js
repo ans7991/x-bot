@@ -26,80 +26,79 @@ router.use(function (req, res, next) {
 });
 
 function getGoogleResponse(clips) {
-  if( clips.length == 0) {
-    var response = [
-       {
-         "type": "simple_response",
-         "platform": "google",
-         "textToSpeech": "I couldn't find something, Can you show you any thing else? What do you want to see?"
+    if (clips.length == 0) {
+        var response = [
+            {
+                "type": "simple_response",
+                "platform": "google",
+                "textToSpeech": "I couldn't find something, Can you show you any thing else? What do you want to see?"
        }
      ]
         return response;
-  } else if( clips.length == 1) {
-    var clip = clips[0];
-    var response = [{
-      "type": "simple_response",
-      "platform": "google",
-      "textToSpeech": "Here is the episode for you"
+    } else if (clips.length == 1) {
+        var clip = clips[0];
+        var response = [{
+                "type": "simple_response",
+                "platform": "google",
+                "textToSpeech": "Here is the episode for you"
     },
-    {
-      "type": "basic_card",
-      "platform": "google",
-      "title": clip.Title,
-      "image": {
-        "url": clip.Tcid16x9,
-        "accessibilityText": "Thumbnail image for " + clip.Title
-      },
-      "buttons": [
-        {
-          "title": "Watch the episode",
-          "openUrlAction": {
-            "url": clip.videoUrl
-          }
+            {
+                "type": "basic_card",
+                "platform": "google",
+                "title": clip.Title,
+                "image": {
+                    "url": clip.Tcid16x9,
+                    "accessibilityText": "Thumbnail image for " + clip.Title
+                },
+                "buttons": [
+                    {
+                        "title": "Watch the episode",
+                        "openUrlAction": {
+                            "url": clip.videoUrl
+                        }
         }
       ]
     },
-    {
-      "type": "link_out_chip",
-      "platform": "google",
-      "destinationName": "to tell friends",
-      "url": "https://www.facebook.com/sharer/sharer.php?u="+clip.videoUrl
+            {
+                "type": "link_out_chip",
+                "platform": "google",
+                "destinationName": "to tell friends",
+                "url": "https://www.facebook.com/sharer/sharer.php?u=" + clip.videoUrl
     }];
-
-    return response;
-  } else {
-    var cards = []
-    clips.forEach(function (clip, index, arr) {
-      cards.push({
-        "optionInfo": {
-          "key": "" + index,
-          "synonyms": [
+        return response;
+    } else {
+        var cards = []
+        clips.forEach(function (clip, index, arr) {
+            cards.push({
+                "optionInfo": {
+                    "key": "" + index,
+                    "synonyms": [
             clip.Title
           ]
-        },
-        "title": "Watch "+ clip.Title,
-        "description": clip.description,
-        "image": {
-          "url": clip.Tcid16x9,
-          "accessibilityText": "Thumbnail image for " + clip.Title
-        }
-      })
-    });
+                },
+                "title": "Watch " + clip.Title,
+                "description": clip.description,
+                "image": {
+                    "url": clip.Tcid16x9,
+                    "accessibilityText": "Thumbnail image for " + clip.Title
+                }
+            })
+        });
 
-    var response = [
-         {
-           "type": "simple_response",
-           "platform": "google",
-           "textToSpeech": "Here are the episodes for you"
+        var response = [
+            {
+                "type": "simple_response",
+                "platform": "google",
+                "textToSpeech": "Here are the episodes for you"
          },
-         {
-           "type": "carousel_card",
-           "platform": "google",
-           "items": cards
+            {
+                "type": "carousel_card",
+                "platform": "google",
+                "items": cards
          }
        ]
-    return response;
-  }
+        return response;
+    }
 }
 
 router.post('/', function (req, res) {
