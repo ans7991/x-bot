@@ -99,7 +99,7 @@ function getGoogleResponse(clips) {
                    "title": "open first result"
                  },
                  {
-                   "title": "open 1rd video"
+                   "title": "open 3rd video"
                  }
                ]
              },
@@ -113,12 +113,46 @@ function getGoogleResponse(clips) {
     }
 }
 
+function getFacebookResponse(clips) {
+  if (clips.length == 0) {
+        var response = {
+           "text":"I couldn't find it, Can I show you any thing else? What do you want to see?"
+         }
+        return response;
+    } else {
+      var elements = clips.map((clip) => {
+            return {
+                "title": clip.Title,
+                "image_url": clip.Tcid16x9,
+                "default_action": {
+                    "type": "web_url",
+                    "url": clip.videoUrl
+                }
+            }
+        });
+
+        var response = {
+                         "attachment": {
+                             "type": "template",
+                             "payload": {
+                                 "template_type": "list",
+                                 "elements": elements
+                             }
+                         }
+                     };
+
+        return response;
+    }
+}
+
 router.post('/', function (req, res) {
     var title;
     var actor;
     var language;
     var genre;
     var episodeNo;
+    console.log("req.body.result.action", req.body.result.action)
+    console.log("req.body.result.contexts", req.body.result.contexts)
     if (req.body.result.action == "show") {
       title=req.body.result.parameters.title;
       actor=req.body.result.parameters.actor;
@@ -146,35 +180,19 @@ router.post('/', function (req, res) {
             res.send(err);
         var clips;
         if (req.body.result.action == "play") {
-          var clipToPlay = resultClips[req.body.result.parameters.ordinal];
+        var context = req.body.result.contexts.find(c => c.name == 'content-shown');
+        var ordinal = context.parameters.ordinal ? context.parameters.ordinal : req.body.result.parameters.ordinal;
+        console.log("req.body.result.parameters.ordinal", ordinal)
+          var clipToPlay = resultClips[ordinal];
           clips = clipToPlay ? [clipToPlay] : []
         } else {
           clips = resultClips ? resultClips : []
         }
 
-        var elements = clips.map((clip) => {
-            return {
-                "title": clip.Title,
-                "image_url": clip.Tcid16x9,
-                "default_action": {
-                    "type": "web_url",
-                    "url": clip.videoUrl
-                }
-            }
-        });
-
         var resp = {
             "messages": getGoogleResponse(clips),
             data: {
-                "facebook": {
-                    "attachment": {
-                        "type": "template",
-                        "payload": {
-                            "template_type": "list",
-                            "elements": elements
-                        }
-                    }
-                }
+                "facebook": getFacebookResponse(clips)
             }
         }
         console.log(JSON.stringify(resp))
