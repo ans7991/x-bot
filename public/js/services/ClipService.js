@@ -15,7 +15,7 @@ angular.module('ClipService', []).factory('Clip', ['$http', function ($http) {
             if (query.title)
                 q = q + "title=" + query.title + "&";
             console.log(q);
-            return $http.get('http://localhost:5050/api/query?' + q);
+            return $http.get('/api/query?' + q);
         },
 
         create: function (data) {
