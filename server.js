@@ -153,7 +153,7 @@ router.post('/', function (req, res) {
     var episodeNo;
     console.log("req.body.result.action", req.body.result.action)
     console.log("req.body.result.contexts", req.body.result.contexts)
-    if (req.body.result.action == "show") {
+    if (req.body.result.action == "show" || req.body.result.action == "watch") {
       title=req.body.result.parameters.title;
       actor=req.body.result.parameters.actor;
       language=req.body.result.parameters.language;
