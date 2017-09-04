@@ -157,7 +157,7 @@ router.post('/', function (req, res) {
       title=req.body.result.parameters.title;
       actor=req.body.result.parameters.actor;
       language=req.body.result.parameters.language;
-      genre=req.body.result.parameters.movieGenre;
+      genre=req.body.result.parameters.genre;
       episodeNo=req.body.result.parameters.episodeNo;
     } else if (req.body.result.action == "play") {
       var context = req.body.result.contexts.find(c => c.name == 'content-shown');
