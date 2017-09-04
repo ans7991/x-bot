@@ -46,7 +46,7 @@ class ClipRepository {
         }
 
         if (criteria.genre) {
-            var genre = genres[criteria.genre];
+            var genre = genres[criteria.genre.toLowerCase()];
             if (genre && query.$or) {
                 query.$or.concat([{
                         Genre: {
@@ -59,6 +59,7 @@ class ClipRepository {
                         }
             }])
             } else if (genre) {
+                
                 query.$or = [{
                         Genre: {
                             $in: genre
