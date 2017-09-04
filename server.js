@@ -164,7 +164,7 @@ router.post('/', function (req, res) {
       title=context.parameters['title.original'];
       actor=context.parameters['actor.original'];
       language=context.parameters['language.original'];
-      genre=context.parameters['movieGenre.original'];
+      genre=context.parameters['genre.original'];
       episodeNo=context.parameters['episodeNo.original'];
     }
 
@@ -183,7 +183,7 @@ router.post('/', function (req, res) {
         var context = req.body.result.contexts.find(c => c.name == 'content-shown');
         var ordinal = context.parameters.ordinal ? context.parameters.ordinal : req.body.result.parameters.ordinal;
         console.log("req.body.result.parameters.ordinal", ordinal)
-          var clipToPlay = resultClips[ordinal];
+          var clipToPlay = resultClips[ordinal - 1];
           clips = clipToPlay ? [clipToPlay] : []
         } else {
           clips = resultClips ? resultClips : []
