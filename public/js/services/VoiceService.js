@@ -1,12 +1,13 @@
 angular.module('VoiceService', []).factory('Voice', ['$http', '$rootScope', function ($http, $rootScope) {
-
     return {
         init: function () {
             if (annyang) {
-
                 annyang.addCallback('result', (phrases) => {
-                    $rootScope.$emit('VOICE_TEXT', phrases);
+                    var phrase = phrases[0].toLowerCase().trim();
+
+                    $rootScope.$emit('VOICE_TEXT', phrase);
                 });
+
 
                 SpeechKITT.annyang();
 

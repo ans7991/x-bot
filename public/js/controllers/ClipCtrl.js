@@ -27,8 +27,14 @@ angular.module('ClipCtrl', []).controller('ClipController', function ($scope, $r
     }
     $rootScope.$on('VOICE_TEXT', fetchByApiAi);
 
-    function fetchByApiAi(event, phrases) {
-        const promise = client.textRequest(phrases[0]);
+    function speak(phrase) {
+        if (!('speechSynthesis' in window)) return;
+        var msg = new SpeechSynthesisUtterance(phrase);
+        window.speechSynthesis.speak(msg);
+    }
+    
+    function fetchByApiAi(event, phrase) {
+        const promise = client.textRequest(phrase);
 
         promise
             .then(handleResponse)
@@ -36,6 +42,8 @@ angular.module('ClipCtrl', []).controller('ClipController', function ($scope, $r
 
         function handleResponse(serverResponse) {
             console.log(serverResponse);
+            const voiceMsg = serverResponse.result.fulfillment.speech || serverResponse.result.fulfillment.messages.filter((m) => m.type ==='simple_response').map((m) => m.textToSpeech)[0];
+            speak(voiceMsg)
             if (serverResponse.result.action === "show") {
                 $scope.query = {
                     actor: serverResponse.result.parameters.actor,
@@ -53,6 +61,6 @@ angular.module('ClipCtrl', []).controller('ClipController', function ($scope, $r
         function handleError(serverError) {
             console.log(serverError);
         }
-        console.log("you said ", phrases[0]);
+        console.log("you said ", phrase);
     }
 });
