@@ -35,8 +35,6 @@ angular.module('ClipCtrl', []).controller('ClipController', function ($scope, $r
     
     function fetchByApiAi(event, phrase) {
         const promise = client.textRequest(phrase);
-        
-        console.log("going to api.ai");
 
         promise
             .then(handleResponse)
@@ -46,8 +44,6 @@ angular.module('ClipCtrl', []).controller('ClipController', function ($scope, $r
             console.log(serverResponse);
             const voiceMsg = serverResponse.result.fulfillment.speech || serverResponse.result.fulfillment.messages.filter((m) => m.type ==='simple_response').map((m) => m.textToSpeech)[0];
             speak(voiceMsg)
-            
-            console.log("res from api.ai " + serverResponse.result.fulfillment.messages[3]);
             
             if (serverResponse.result.action === "show") {
                 $scope.query = {
@@ -62,7 +58,6 @@ angular.module('ClipCtrl', []).controller('ClipController', function ($scope, $r
                 window.location = $scope.clips[serverResponse.result.parameters.ordinal - 1].videoUrl;
             } else if (serverResponse.result.fulfillment.messages.length == 4 &&
                        serverResponse.result.fulfillment.messages[3].speech == "Visit https://goo.gl/75EzFd for free content") {
-                console.log("I am here");
                 window.location = "https://goo.gl/75EzFd";
             }
 
