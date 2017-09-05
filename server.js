@@ -31,7 +31,7 @@ function getGoogleResponse(clips) {
             {
                 "type": "simple_response",
                 "platform": "google",
-                "textToSpeech": "I couldn't find it, Can I show you any thing else? What do you want to see?"
+                "textToSpeech": "I couldn't find it, Can I show you any thing else?"
        }
      ]
         return response;
@@ -40,7 +40,7 @@ function getGoogleResponse(clips) {
         var response = [{
                 "type": "simple_response",
                 "platform": "google",
-                "textToSpeech": "Here is the episode for you"
+                "textToSpeech": "Here is the result for you"
     },
             {
                 "type": "basic_card",
@@ -89,7 +89,7 @@ function getGoogleResponse(clips) {
             {
                 "type": "simple_response",
                 "platform": "google",
-                "textToSpeech": "Here are the episodes for you"
+                "textToSpeech": "Here are the results for you"
              },
              {
                "type": "suggestion_chips",
@@ -116,7 +116,7 @@ function getGoogleResponse(clips) {
 function getFacebookResponse(clips) {
   if (clips.length == 0) {
         var response = {
-           "text":"I couldn't find it, Can I show you any thing else? What do you want to see?"
+           "text":"I couldn't find it, Can I show you any thing else?"
          }
         return response;
     } else {
