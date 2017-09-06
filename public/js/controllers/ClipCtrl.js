@@ -51,7 +51,8 @@ angular.module('ClipCtrl', []).controller('ClipController', function ($scope, $r
                     episodeNo: serverResponse.result.parameters.episodeNo,
                     genre: serverResponse.result.parameters.genre,
                     language: serverResponse.result.parameters.language,
-                    title: serverResponse.result.parameters.title
+                    title: serverResponse.result.parameters.title,
+                    datePeriod: serverResponse.result.parameters.datePeriod
                 };
                 fetch()
             } else if (serverResponse.result.action === "play") {

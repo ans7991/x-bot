@@ -81,6 +81,17 @@ class ClipRepository {
         }
 
         console.log(query);
+        
+        function filterByDatePeriod(datePeriod, clips) {
+            var start = new Date(datePeriod.split('/')[0]);
+            var end = new Date(datePeriod.split('/')[1]);
+            return clips.filter(function (clip) {
+                if (clip.ReleaseDate) {
+                    var releaseDate = new Date(clip.ReleaseDate);
+                    return start <= releaseDate && end >= releaseDate;
+                }
+            });
+        }
 
         Clip.find(query, {
                 score: {
@@ -92,7 +103,7 @@ class ClipRepository {
                     $meta: "textScore"
                 }
             })
-            .select('Title _id Actors Actresses Tcid16x9 Language EpisodeNo Paid')
+            .select('Title _id Actors Actresses Tcid16x9 Language EpisodeNo Paid ReleaseDate')
             .lean()
             .limit(criteria.limit || 12)
             .exec((err, clips) => {
@@ -101,6 +112,9 @@ class ClipRepository {
                         clip.Tcid16x9 = "https://vuclipi-a.akamaihd.net/p/tthumb280x210/v3/d-1/" + clip.Tcid16x9 + ".jpg";
                         clip.videoUrl = "https://web.viu.com/in-hindi/en/video-hackathon-" + clip._id;
                     })
+                    if(criteria.datePeriod) {
+                        clips = filterByDatePeriod(criteria.datePeriod, clips);
+                    }
                 }
                 if (!criteria.actor && !criteria.episodeNo && !criteria.genre && !criteria.title && !criteria.language) {
                     clips.length = 0;

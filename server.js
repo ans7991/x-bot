@@ -159,6 +159,7 @@ router.post('/', function (req, res) {
       language=req.body.result.parameters.language;
       genre=req.body.result.parameters.genre;
       episodeNo=req.body.result.parameters.episodeNo;
+      datePeriod=req.body.result.parameters.datePeriod;
     } else if (req.body.result.action == "play") {
       var context = req.body.result.contexts.find(c => c.name == 'content-shown');
       title=context.parameters['title.original'];
@@ -246,6 +247,7 @@ router.route('/query').get(function (req, res) {
         language: req.query.language,
         genre: req.query.genre,
         episodeNo: req.query.episodeNo,
+        datePeriod: req.query.datePeriod
     }, function (err, clips) {
         if (err)
             res.send(err);
