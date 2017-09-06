@@ -45,7 +45,7 @@ angular.module('ClipCtrl', []).controller('ClipController', function ($scope, $r
             const voiceMsg = serverResponse.result.fulfillment.speech || serverResponse.result.fulfillment.messages.filter((m) => m.type ==='simple_response').map((m) => m.textToSpeech)[0];
             speak(voiceMsg)
             
-            if (serverResponse.result.action === "show") {
+            if (serverResponse.result.action === "show" || serverResponse.result.action === "watch") {
                 $scope.query = {
                     actor: serverResponse.result.parameters.actor,
                     episodeNo: serverResponse.result.parameters.episodeNo,
