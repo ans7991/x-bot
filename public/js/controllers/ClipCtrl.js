@@ -30,7 +30,7 @@ angular.module('ClipCtrl', []).controller('ClipController', function ($scope, $r
     function speak(phrase) {
         if (!('speechSynthesis' in window)) return;
         var msg = new SpeechSynthesisUtterance(phrase);
-        window.speechSynthesis.speak(msg);
+        window.speechSynthesis.speak(msg);        
     }
     
     function fetchByApiAi(event, phrase) {
@@ -43,7 +43,9 @@ angular.module('ClipCtrl', []).controller('ClipController', function ($scope, $r
         function handleResponse(serverResponse) {
             console.log(serverResponse);
             const voiceMsg = serverResponse.result.fulfillment.speech || serverResponse.result.fulfillment.messages.filter((m) => m.type ==='simple_response').map((m) => m.textToSpeech)[0];
-            speak(voiceMsg)
+            annyang.pause();            
+            speak(voiceMsg);
+            annyang.resume();
             
             if (serverResponse.result.action === "show") {
                 $scope.query = {
