@@ -12,8 +12,10 @@ angular.module('ClipCtrl', []).controller('ClipController', function ($scope, $r
         });
 
     Voice.init();
-    const client = new ApiAi.ApiAiClient({ accessToken: '6998dfed53b9433c835277251d09e223' });
-    
+    const client = new ApiAi.ApiAiClient({
+        accessToken: '6998dfed53b9433c835277251d09e223'
+    });
+
     $scope.fetch = fetch;
 
     function fetch() {
@@ -32,7 +34,7 @@ angular.module('ClipCtrl', []).controller('ClipController', function ($scope, $r
         var msg = new SpeechSynthesisUtterance(phrase);
         window.speechSynthesis.speak(msg);
     }
-    
+
     function fetchByApiAi(event, phrase) {
         const promise = client.textRequest(phrase);
 
@@ -42,9 +44,10 @@ angular.module('ClipCtrl', []).controller('ClipController', function ($scope, $r
 
         function handleResponse(serverResponse) {
             console.log(serverResponse);
-            const voiceMsg = serverResponse.result.fulfillment.speech || serverResponse.result.fulfillment.messages.filter((m) => m.type ==='simple_response').map((m) => m.textToSpeech)[0];
-            speak(voiceMsg)
-            
+            const voiceMsg = serverResponse.result.fulfillment.speech ||
+                serverResponse.result.fulfillment.messages.filter((m) => m.type === 'simple_response').map((m) => m.textToSpeech)[0];
+            //            speak(voiceMsg)
+
             if (serverResponse.result.action === "show" || serverResponse.result.action === "watch") {
                 $scope.query = {
                     actor: serverResponse.result.parameters.actor,
@@ -58,11 +61,12 @@ angular.module('ClipCtrl', []).controller('ClipController', function ($scope, $r
             } else if (serverResponse.result.action === "play") {
                 window.location = $scope.clips[serverResponse.result.parameters.ordinal - 1].videoUrl;
             } else if (serverResponse.result.fulfillment.messages.length == 4 &&
-                       serverResponse.result.fulfillment.messages[3].speech == "Visit https://goo.gl/75EzFd for free content") {
+                serverResponse.result.fulfillment.messages[3].speech == "Visit https://goo.gl/75EzFd for free content") {
                 window.location = "https://goo.gl/75EzFd";
             }
 
         }
+
         function handleError(serverError) {
             console.log(serverError);
         }
